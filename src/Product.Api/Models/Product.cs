@@ -1,4 +1,4 @@
-﻿namespace Product.Api.Models
+﻿namespace Products.Api.Models
 {
     /// <summary>
     /// Represents a product item available in the store.

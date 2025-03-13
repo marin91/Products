@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using Product.Api.Models;
+using Products.Api.Models;
 
-namespace Product.Api.Controllers
+
+namespace Products.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -21,6 +22,25 @@ namespace Product.Api.Controllers
             _logger.LogInformation("Atttempting to retrieve all of the store products.");
 
             var allProducts = Enumerable.Range(1, 5).Select(index => new Models.Product
+            {
+                Id = index,
+                Description = "Some Description",
+                Price = 1,
+                Quantity = 10
+
+            })
+            .ToArray();
+
+            return Ok(allProducts);
+        }
+
+        [HttpPost(Name = "AddProduct")]
+        public IActionResult AddProduct([FromBody] Product product)
+        {
+
+            _logger.LogInformation("Atttempting to retrieve all of the store products.");
+
+            var allProducts = Enumerable.Range(1, 5).Select(index => new Product
             {
                 Id = index,
                 Description = "Some Description",
