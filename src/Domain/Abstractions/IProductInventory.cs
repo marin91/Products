@@ -11,7 +11,7 @@ namespace Domain.Abstractions
         /// Retrieves all products from the inventory.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public Task RetrieveAllProductsAsync();
+        public Task<IEnumerable<Product>> RetrieveAllProductsAsync();
 
         /// <summary>
         /// Adds a new product to the inventory.
