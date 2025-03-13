@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "src\Domain\Domain
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.SqlServer", "src\Infrastructure.SqlServer\Infrastructure.SqlServer.csproj", "{13D8D101-189F-4FAC-AAE7-102A291962F2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F0B7F37B-0B85-453D-B26C-A7F261DD5082}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1BD7F068-40C8-482E-8FE7-9DDBB22C560E} = {F0B7F37B-0B85-453D-B26C-A7F261DD5082}
+		{1762620B-E96E-46AE-8F02-70E09B23FF31} = {F0B7F37B-0B85-453D-B26C-A7F261DD5082}
+		{13D8D101-189F-4FAC-AAE7-102A291962F2} = {F0B7F37B-0B85-453D-B26C-A7F261DD5082}
 	EndGlobalSection
 EndGlobal
