@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Product.Api.Models;
 
 namespace Product.Api.Controllers
 {
@@ -6,11 +7,6 @@ namespace Product.Api.Controllers
     [Route("[controller]")]
     public class ProductController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<ProductController> _logger;
 
         public ProductController(ILogger<ProductController> logger)
@@ -18,16 +14,23 @@ namespace Product.Api.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet(Name = "All")]
+        public IActionResult GetAllStoreProducts()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+
+            _logger.LogInformation("Atttempting to retrieve all of the store products.");
+
+            var allProducts = Enumerable.Range(1, 5).Select(index => new Models.Product
             {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+                Id = index,
+                Description = "Some Description",
+                Price = 1,
+                Quantity = 10
+
             })
             .ToArray();
+
+            return Ok(allProducts);
         }
     }
 }
