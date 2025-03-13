@@ -13,20 +13,26 @@ namespace Products.Api.Controllers
 
         private readonly IProductInventory _productInventory;
 
-        private readonly IMap<Product, DomainProduct> _productToDomainMapper;
+        private readonly IMap<Product, DomainProduct> _apiToDomainMapper;
+
+        private readonly IMap<DomainProduct, Product> _domainToApiMapper;
 
         public ProductController(ILogger<ProductController> logger, IProductInventory productInventory, 
-            IMap<Product, DomainProduct> productToDomainMapper)
+            IMap<Product, DomainProduct> apiToDomainMapper,
+            IMap<DomainProduct, Product> domainToApiMapper)
         {
             _logger = logger;
             _productInventory = productInventory;
-            _productToDomainMapper = productToDomainMapper;
+            _apiToDomainMapper = apiToDomainMapper;
+            _domainToApiMapper = domainToApiMapper;
         }
 
         /// <summary>Retrieves all of the products in the system.</summary>
         /// <response code="200">Successfully retrieved all of the products.</response>
+        /// <response code="204">There are currently no products in the inventory system.</response>
         /// <response code="500">An unexpected internal server error occurred while processing the request.</response>        
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
         public async Task<IActionResult> GetAllStoreProducts()
@@ -36,11 +42,20 @@ namespace Products.Api.Controllers
 
             try
             {
-                var storeProducts = await _productInventory.RetrieveAllProductsAsync();
+                var domainStoreProducts = await _productInventory.RetrieveAllProductsAsync();
 
-                _logger.LogInformation("The store products were successfully retrieved.");
+                if(domainStoreProducts is null || !domainStoreProducts.Any())
+                {
+                    _logger.LogWarning("There are currently no products in the inventory system.");
 
-                return Ok(storeProducts);
+                    return NoContent();
+                }
+
+                _logger.LogInformation($"{domainStoreProducts.Count()} store products were successfully retrieved.");
+
+                var mappedProducts = domainStoreProducts.Select(_domainToApiMapper.Map);
+
+                return Ok(mappedProducts);
             }
             catch (Exception ex)
             {
@@ -67,7 +82,7 @@ namespace Products.Api.Controllers
 
             try
             {
-                var domainProduct = _productToDomainMapper.Map(product);
+                var domainProduct = _apiToDomainMapper.Map(product);
 
                 await _productInventory.AddProductAsync(domainProduct);
 
@@ -103,7 +118,7 @@ namespace Products.Api.Controllers
 
             try
             {
-                var domainProduct = _productToDomainMapper.Map(product);
+                var domainProduct = _apiToDomainMapper.Map(product);
 
                 await _productInventory.UpdateProductAsync(domainProduct);
 
