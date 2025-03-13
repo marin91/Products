@@ -13,14 +13,14 @@ namespace Products.Api.Controllers
 
         private readonly IProductInventory _productInventory;
 
-        private readonly IMap<Product, DomainProduct> _productMapper;
+        private readonly IMap<Product, DomainProduct> _productToDomainMapper;
 
         public ProductController(ILogger<ProductController> logger, IProductInventory productInventory, 
-            IMap<Product, DomainProduct> productMapper)
+            IMap<Product, DomainProduct> productToDomainMapper)
         {
             _logger = logger;
             _productInventory = productInventory;
-            _productMapper = productMapper;
+            _productToDomainMapper = productToDomainMapper;
         }
 
         /// <summary>Retrieves all of the products in the system.</summary>
@@ -67,7 +67,7 @@ namespace Products.Api.Controllers
 
             try
             {
-                var domainProduct = _productMapper.Map(product);
+                var domainProduct = _productToDomainMapper.Map(product);
 
                 await _productInventory.AddProductAsync(domainProduct);
 
@@ -103,7 +103,7 @@ namespace Products.Api.Controllers
 
             try
             {
-                var domainProduct = _productMapper.Map(product);
+                var domainProduct = _productToDomainMapper.Map(product);
 
                 await _productInventory.UpdateProductAsync(domainProduct);
 
