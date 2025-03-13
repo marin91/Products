@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a product item available in the store.
     /// </summary>
-    internal class Product
+    public class Product
     {
         public Product(long productId, string description, decimal price, int quantity)
         {
