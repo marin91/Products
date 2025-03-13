@@ -23,7 +23,12 @@ namespace Products.Api.Controllers
             _productMapper = productMapper;
         }
 
-        [HttpGet(Name = "All")]
+        /// <summary>Retrieves all of the products in the system.</summary>
+        /// <response code="200">Successfully retrieved all of the products.</response>
+        /// <response code="500">An unexpected internal server error occurred while processing the request.</response>        
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpGet]
         public async Task<IActionResult> GetAllStoreProducts()
         {
 
@@ -46,7 +51,15 @@ namespace Products.Api.Controllers
 
         }
 
-        [HttpPost(Name = "AddProduct")]
+        /// <summary>Creates a product in the system.</summary>
+        /// <param name="product">The product to be added.</param>
+        /// <response code="201">Successfully created the product and added it to the system.</response>
+        /// <response code="400">The request contains invalid or missing data.</response>
+        /// <response code="500">An unexpected internal server error occurred while processing the request.</response>        
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost]
         public async Task<IActionResult> AddProduct([FromBody] Product product)
         {
 
@@ -70,7 +83,19 @@ namespace Products.Api.Controllers
             }            
         }
 
-        [HttpPut(Name = "UpdateProduct")]
+
+        /// <summary>
+        /// Updates an existing product in the inventory system.
+        /// </summary>
+        /// <response code="204">Successfully updated the product.</response>
+        /// <response code="400">The request contains invalid or missing data.</response>
+        /// <response code="404">The product does not exist in the system.</response>
+        /// <response code="500">An unexpected internal server error occurred while processing the request.</response>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPut]
         public async Task <IActionResult> UpdateProduct([FromBody] Product product)
         {
 
@@ -94,7 +119,19 @@ namespace Products.Api.Controllers
             }
         }
 
-        [HttpDelete(Name = "DeleteProduct")]
+        /// <summary>
+        /// Deletes an existing product from the inventory system.
+        /// </summary>
+        /// <response code="204">The product was successfully deleted.</response>
+        /// <response code="400">The request contains invalid or missing data.</response>
+        /// <response code="404">The product does not exist in the system.</response>
+        /// <response code="500">An unexpected internal server error occurred while processing the request.</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpDelete]
+        [Route("/[controller]/{productId:int}")]
         public IActionResult DeleteProduct(long productId)
         {
 
