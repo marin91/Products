@@ -1,24 +1,42 @@
 ﻿using Domain.Abstractions;
 using Domain.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Domain.Implementations
 {
     internal class ProductInventory : IProductInventory
     {
-        internal readonly IReadProducts _productsReader;
+        private readonly ILogger<ProductInventory> _logger;
 
-        internal readonly IWriteProducts _productsWriter;
+        private readonly IReadProducts _productsReader;
 
-        public ProductInventory(IReadProducts productsReader, IWriteProducts productsWriter)
+        private readonly IWriteProducts _productsWriter;
+
+        public ProductInventory(IReadProducts productsReader, IWriteProducts productsWriter, ILogger<ProductInventory> logger)
         {
             _productsReader = productsReader;
             _productsWriter = productsWriter;
+            _logger = logger;
         }
 
         /// <inheritdoc />
-        public Task AddProductAsync(Product product)
+        public async Task AddProductAsync(Product product)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger.LogInformation("Attempting to create product in the system.");
+
+                await _productsWriter.CreateProductAsync(product);
+
+                _logger.LogInformation("The product was successfully created in the system.");
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unknown error occurred while creating the product in the system.");
+
+                throw;
+            }
         }
 
         /// <inheritdoc />
@@ -30,13 +48,42 @@ namespace Domain.Implementations
         /// <inheritdoc />
         public async Task<IEnumerable<Product>> RetrieveAllProductsAsync()
         {
-            return await _productsReader.RetrieveAllStoreProductsAsync();
+            try
+            {
+                _logger.LogInformation("Attempting to retrieve all of the store products.");
+
+                var allProducts = await _productsReader.RetrieveAllStoreProductsAsync();
+
+                _logger.LogInformation($"The products were obtained successfully. Product Count: {allProducts.Count()}");
+
+                return allProducts;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unknown error occurred when retrieving the products.");
+
+                throw;
+            }            
         }
 
         /// <inheritdoc />
-        public Task UpdateProductAsync(Product product)
+        public async Task UpdateProductAsync(Product product)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger.LogInformation("Attempting to update an existing product in the system.");
+
+                await _productsWriter.UpdateProductAsync(product);
+
+                _logger.LogInformation("The product was successfully updated.");
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unknown error occurred while updating the product in the system.");
+
+                throw;
+            }
         }
     }
 }
