@@ -13,10 +13,16 @@ namespace Domain.Implementations
 
         private readonly IWriteProducts _productsWriter;
 
-        public ProductInventory(IReadProducts productsReader, IWriteProducts productsWriter, ILogger<ProductInventory> logger)
+        private readonly IRemoveProducts _productsRemover;
+
+        public ProductInventory(IReadProducts productsReader, 
+            IWriteProducts productsWriter, 
+            IRemoveProducts productsRemover, 
+            ILogger<ProductInventory> logger)
         {
             _productsReader = productsReader;
             _productsWriter = productsWriter;
+            _productsRemover = productsRemover;
             _logger = logger;
         }
 
@@ -41,9 +47,23 @@ namespace Domain.Implementations
         }
 
         /// <inheritdoc />
-        public Task DeleteProductAsync(Product product)
+        public async Task DeleteProductAsync(Product product)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger.LogInformation($"Attempting to remove a product from the system with the following Id: {product.Id}.");
+
+                await _productsRemover.DeleteProductAsync(product.Id);
+
+                _logger.LogInformation($"The product was successfully removed from the system.");
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unknown error occurred when removing a product from the system.");
+
+                throw;
+            }
         }
 
         /// <inheritdoc />
