@@ -1,4 +1,4 @@
-﻿using Domain.Abstractions;
+﻿using Domain.Abstractions.Repositories;
 using Domain.Models;
 
 namespace Infrastructure.SqlServer.Implementations.Repositories
@@ -7,12 +7,6 @@ namespace Infrastructure.SqlServer.Implementations.Repositories
     {
         /// <inheritdoc />
         public Task CreateProductAsync(Product product)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        public Task DeleteProductAsync(long productId)
         {
             throw new NotImplementedException();
         }

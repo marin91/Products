@@ -1,6 +1,6 @@
 ﻿using Domain.Models;
 
-namespace Domain.Abstractions
+namespace Domain.Abstractions.Repositories
 {
     /// <summary>
     /// Defines operations for reading product data.

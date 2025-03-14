@@ -1,6 +1,6 @@
 ﻿using Domain.Models;
 
-namespace Domain.Abstractions
+namespace Domain.Abstractions.Repositories
 {
     /// <summary>
     /// Defines operations for writing product data.
@@ -21,11 +21,5 @@ namespace Domain.Abstractions
         /// <returns>A task representing the asynchronous operation.</returns>
         Task UpdateProductAsync(Product product);
 
-        /// <summary>
-        /// Asynchronously deletes a product by its unique identifier.
-        /// </summary>
-        /// <param name="productId">The unique identifier of the product to be deleted.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        Task DeleteProductAsync(long productId);
     }
 }
