@@ -2,10 +2,22 @@
 
 namespace Domain.Abstractions
 {
-    internal interface IReadProducts
+    /// <summary>
+    /// Defines operations for reading product data.
+    /// </summary>
+    public interface IReadProducts
     {
-        public IEnumerable<Product> RetrieveAllStoreProductsAsync();
+        /// <summary>
+        /// Retrieves all products available in the store.
+        /// </summary>
+        /// <returns>An enumerable collection of products.</returns>
+        IEnumerable<Product> RetrieveAllStoreProductsAsync();
 
-        public Product GetStoreProductByIdAsync(int id);
+        /// <summary>
+        /// Retrieves a store product by its unique identifier.
+        /// </summary>
+        /// <param name="id">The unique identifier of the product.</param>
+        /// <returns>The product corresponding to the given identifier.</returns>
+        Product GetStoreProductByIdAsync(int id);
     }
 }
