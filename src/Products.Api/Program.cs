@@ -1,4 +1,5 @@
 using Domain;
+using Infrastructure.SqlServer;
 using Microsoft.OpenApi.Models;
 using Products.Api;
 using System.Reflection;
@@ -7,7 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.RegisterTheProductMapper()
+builder.Services.RegisterDbProductMapper()
+    .RegisterTheProductMapper()
     .RegisterTheProductInventory();
 
 builder.Services.AddControllers();
