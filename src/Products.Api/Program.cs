@@ -1,5 +1,6 @@
 using Domain;
 using Infrastructure.SqlServer;
+using Infrastructure.SqlServer.Options;
 using Microsoft.OpenApi.Models;
 using Products.Api;
 using System.Reflection;
@@ -7,6 +8,9 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.Configure<ProductsConnectionOptions>(
+    builder.Configuration.GetSection(ProductsConnectionOptions.ConfigSection));
 
 builder.Services.RegisterProductRepositories()   
     .RegisterTheProductMapper()
