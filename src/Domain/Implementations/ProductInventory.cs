@@ -60,7 +60,7 @@ namespace Domain.Implementations
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unknown error occurred when removing a product from the system.");
+                _logger.LogError(ex, "An unknown error occurred while removing a product from the system.");
 
                 throw;
             }
@@ -81,7 +81,7 @@ namespace Domain.Implementations
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unknown error occurred when retrieving the products.");
+                _logger.LogError(ex, "An unknown error occurred while retrieving the products.");
 
                 throw;
             }            
