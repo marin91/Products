@@ -11,13 +11,13 @@ namespace Domain.Abstractions
         /// Retrieves all products available in the store.
         /// </summary>
         /// <returns>An enumerable collection of products.</returns>
-        IEnumerable<Product> RetrieveAllStoreProductsAsync();
+        Task<IEnumerable<Product>> RetrieveAllStoreProductsAsync();
 
         /// <summary>
         /// Retrieves a store product by its unique identifier.
         /// </summary>
         /// <param name="id">The unique identifier of the product.</param>
         /// <returns>The product corresponding to the given identifier.</returns>
-        Product GetStoreProductByIdAsync(int id);
+        Task<Product> GetStoreProductByIdAsync(int id);
     }
 }

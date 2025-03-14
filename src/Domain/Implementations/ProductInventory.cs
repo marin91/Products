@@ -28,9 +28,9 @@ namespace Domain.Implementations
         }
 
         /// <inheritdoc />
-        public Task<IEnumerable<Product>> RetrieveAllProductsAsync()
+        public async Task<IEnumerable<Product>> RetrieveAllProductsAsync()
         {
-            throw new NotImplementedException();
+            return await _productsReader.RetrieveAllStoreProductsAsync();
         }
 
         /// <inheritdoc />
