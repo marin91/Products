@@ -1,6 +1,6 @@
 ﻿using Domain.Abstractions;
 using Domain.Abstractions.Repositories;
-using Domain.Models;
+using Infrastructure.SqlServer.Models;
 using DomainProduct = Domain.Models.Product;
 
 namespace Infrastructure.SqlServer.Implementations.Repositories
@@ -15,13 +15,13 @@ namespace Infrastructure.SqlServer.Implementations.Repositories
         }
 
         /// <inheritdoc />
-        public Task<Product> GetStoreProductByIdAsync(int id)
+        public Task<DomainProduct> GetStoreProductByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc />
-        public Task<IEnumerable<Product>> RetrieveAllStoreProductsAsync()
+        public Task<IEnumerable<DomainProduct>> RetrieveAllStoreProductsAsync()
         {
             throw new NotImplementedException();
         }
