@@ -5,6 +5,16 @@ namespace Domain.Implementations
 {
     internal class ProductInventory : IProductInventory
     {
+        internal readonly IReadProducts _productsReader;
+
+        internal readonly IWriteProducts _productsWriter;
+
+        public ProductInventory(IReadProducts productsReader, IWriteProducts productsWriter)
+        {
+            _productsReader = productsReader;
+            _productsWriter = productsWriter;
+        }
+
         /// <inheritdoc />
         public Task AddProductAsync(Product product)
         {
