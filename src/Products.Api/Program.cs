@@ -1,11 +1,8 @@
 using Domain;
-using FluentValidation;
 using Infrastructure.SqlServer;
 using Infrastructure.SqlServer.Options;
 using Microsoft.OpenApi.Models;
 using Products.Api;
-using Products.Api.Models;
-using Products.Api.Validators;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
