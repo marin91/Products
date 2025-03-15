@@ -9,7 +9,7 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.RegisterProblemDetailsHandling();
+builder.RegisterProblemDetailsHandling();
 
 builder.Services.RegisterTheProductValidator();
 

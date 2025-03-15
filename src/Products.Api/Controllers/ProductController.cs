@@ -1,5 +1,6 @@
 using Domain.Abstractions;
 using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Products.Api.Models;
 using DomainProduct = Domain.Models.Product;
@@ -66,7 +67,7 @@ namespace Products.Api.Controllers
             {
                 _logger.LogError(ex, "An unknown error occurred while retrieving all of the store's products.");
 
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                throw;
             }
 
         }
@@ -97,11 +98,11 @@ namespace Products.Api.Controllers
 
                 return Ok();
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not ValidationException)
             {
                 _logger.LogError(ex, "An unknown error occurred while adding a product to the system.");
 
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                throw;
             }            
         }
 
@@ -139,7 +140,7 @@ namespace Products.Api.Controllers
             {
                 _logger.LogError(ex, "An unknown error occurred while updating an existing product.");
 
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                throw;
             }
         }
 
@@ -163,13 +164,18 @@ namespace Products.Api.Controllers
 
             try
             {
+                if (productId <= 0)
+                {
+                    throw new ValidationException(new List<ValidationFailure> { new ValidationFailure(nameof(productId), "The productId is invalid.") });
+                }
+
                 return Ok();
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not ValidationException)
             {
                 _logger.LogError(ex, "An unknown error occurred while deleting the product from the system.");
                
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                throw;
             }            
         }
 

@@ -33,10 +33,12 @@ namespace Products.Api
             return services.AddScoped<IValidator<Product>, ProductValidator>();
         }
 
-        public static IServiceCollection RegisterProblemDetailsHandling(this IServiceCollection services)
+        public static IServiceCollection RegisterProblemDetailsHandling(this WebApplicationBuilder builder)
         {
-            return services.AddProblemDetails(options =>
+            return builder.Services.AddProblemDetails(options =>
             {
+                options.IncludeExceptionDetails = (ctx, ex) =>
+                    false;
 
                 // Handle validation exceptions (e.g., FluentValidation)
                 options.Map<ValidationException>((ctx, ex) =>
@@ -69,6 +71,10 @@ namespace Products.Api
 
                     return validationProblemDetails;
                 });
+
+                // Default handler for unmapped exceptions
+                options.MapToStatusCode<Exception>((int)HttpStatusCode.InternalServerError);
+
             });
         }
     }
