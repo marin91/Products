@@ -9,7 +9,7 @@ namespace Products.Api.Validators
         { 
             RuleFor(product => product.Id).GreaterThan(0);
             RuleFor(product => product.Price).GreaterThan(0);
-            RuleFor(product => product.Price).GreaterThanOrEqualTo(0);
+            RuleFor(product => product.Quantity).GreaterThanOrEqualTo(0);
         }
     }
 }
