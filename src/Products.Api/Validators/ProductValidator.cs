@@ -5,5 +5,11 @@ namespace Products.Api.Validators
 {
     public class ProductValidator : AbstractValidator<Product> 
     {
+        public ProductValidator() 
+        { 
+            RuleFor(product => product.Id).GreaterThan(0);
+            RuleFor(product => product.Price).GreaterThan(0);
+            RuleFor(product => product.Price).GreaterThanOrEqualTo(0);
+        }
     }
 }
