@@ -1,13 +1,15 @@
 using Domain;
+using Hellang.Middleware.ProblemDetails;
 using Infrastructure.SqlServer;
 using Infrastructure.SqlServer.Options;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Products.Api;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.RegisterProblemDetailsHandling();
 
 builder.Services.RegisterTheProductValidator();
 
@@ -15,10 +17,30 @@ builder.Services.Configure<ProductsConnectionOptions>(
     builder.Configuration.GetSection(ProductsConnectionOptions.ConfigSection));
 
 builder.Services.RegisterProductRepositories()   
-    .RegisterTheProductMapper()
+    .RegisterTheProductMappers()
     .RegisterTheProductInventory();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        // Customize automatic 400 responses
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var problemDetails = new ValidationProblemDetails(context.ModelState)
+            {
+                Type = "https://api.yourapp.com/errors/validation",
+                Title = "One or more validation errors occurred.",
+                Status = StatusCodes.Status400BadRequest,
+                Instance = context.HttpContext.Request.Path,
+            };
+
+            return new BadRequestObjectResult(problemDetails)
+            {
+                ContentTypes = { "application/problem+json" }
+            };
+        };
+    });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -36,6 +58,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+app.UseProblemDetails();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

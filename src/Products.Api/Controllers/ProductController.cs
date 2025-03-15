@@ -1,4 +1,5 @@
 using Domain.Abstractions;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Products.Api.Models;
 using DomainProduct = Domain.Models.Product;
@@ -11,6 +12,8 @@ namespace Products.Api.Controllers
     {
         private readonly ILogger<ProductController> _logger;
 
+        private readonly IValidator<Product> _productValidator;
+
         private readonly IProductInventory _productInventory;
 
         private readonly IMap<Product, DomainProduct> _apiToDomainMapper;
@@ -19,12 +22,14 @@ namespace Products.Api.Controllers
 
         public ProductController(ILogger<ProductController> logger, IProductInventory productInventory, 
             IMap<Product, DomainProduct> apiToDomainMapper,
-            IMap<DomainProduct, Product> domainToApiMapper)
+            IMap<DomainProduct, Product> domainToApiMapper,
+            IValidator<Product> productValidator)
         {
             _logger = logger;
             _productInventory = productInventory;
             _apiToDomainMapper = apiToDomainMapper;
             _domainToApiMapper = domainToApiMapper;
+            _productValidator = productValidator;
         }
 
         /// <summary>Retrieves all of the products in the system.</summary>
@@ -41,7 +46,7 @@ namespace Products.Api.Controllers
             _logger.LogInformation("Attempting to retrieve all of the store products.");
 
             try
-            {
+            {                
                 var domainStoreProducts = await _productInventory.RetrieveAllProductsAsync();
 
                 if(domainStoreProducts is null || !domainStoreProducts.Any())
@@ -82,6 +87,8 @@ namespace Products.Api.Controllers
 
             try
             {
+                await ValidateRequestAsync(product);
+
                 var domainProduct = _apiToDomainMapper.Map(product);
 
                 await _productInventory.AddProductAsync(domainProduct);
@@ -118,6 +125,8 @@ namespace Products.Api.Controllers
 
             try
             {
+                await ValidateRequestAsync(product);
+
                 var domainProduct = _apiToDomainMapper.Map(product);
 
                 await _productInventory.UpdateProductAsync(domainProduct);
@@ -126,7 +135,7 @@ namespace Products.Api.Controllers
 
                 return Ok();
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not ValidationException) 
             {
                 _logger.LogError(ex, "An unknown error occurred while updating an existing product.");
 
@@ -162,6 +171,19 @@ namespace Products.Api.Controllers
                
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }            
+        }
+
+
+        private async Task ValidateRequestAsync(Product product)
+        {
+            var validationResult = await _productValidator.ValidateAsync(product);
+
+            if (!validationResult.IsValid)
+            {
+                _logger.LogWarning("The request failed validation.");
+
+                throw new ValidationException(validationResult.Errors);
+            }
         }
     }
 }
