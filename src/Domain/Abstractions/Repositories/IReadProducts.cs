@@ -18,6 +18,6 @@ namespace Domain.Abstractions.Repositories
         /// </summary>
         /// <param name="id">The unique identifier of the product.</param>
         /// <returns>The product corresponding to the given identifier.</returns>
-        Task<Product> GetStoreProductByIdAsync(int id);
+        Task<Product> GetStoreProductByIdAsync(long id);
     }
 }

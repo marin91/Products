@@ -1,5 +1,6 @@
 ﻿using Domain.Abstractions;
 using Domain.Abstractions.Repositories;
+using Domain.Exceptions;
 using Domain.Models;
 using Microsoft.Extensions.Logging;
 
@@ -51,12 +52,22 @@ namespace Domain.Implementations
         {
             try
             {
-                _logger.LogInformation($"Attempting to remove a product from the system with the following Id: {product.Id}.");
+                var productId = product.Id;
 
-                await _productsRemover.DeleteProductAsync(product.Id);
+                _logger.LogInformation($"Attempting to remove a product from the system with the following Id: {productId}.");
+
+                await ThrowExceptionIfProductDoesNotExistInSystem(productId);
+
+                await _productsRemover.DeleteProductAsync(productId);
 
                 _logger.LogInformation($"The product was successfully removed from the system.");
 
+            }
+            catch (ProductDoesNotExistException ex)
+            {
+                _logger.LogError(ex, "The product can't be removed because it doesn't exist in the system.");
+
+                throw;
             }
             catch (Exception ex)
             {
@@ -92,18 +103,38 @@ namespace Domain.Implementations
         {
             try
             {
+                var productId = product.Id;
+
                 _logger.LogInformation("Attempting to update an existing product in the system.");
+
+                await ThrowExceptionIfProductDoesNotExistInSystem(productId);
 
                 await _productsWriter.UpdateProductAsync(product);
 
                 _logger.LogInformation("The product was successfully updated.");
 
             }
+            catch (ProductDoesNotExistException ex)
+            {
+                _logger.LogError(ex, "The product can't be updated because it doesn't exist in the system.");
+
+                throw;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An unknown error occurred while updating the product in the system.");
 
                 throw;
+            }
+        }
+
+        private async Task ThrowExceptionIfProductDoesNotExistInSystem(long productId)
+        {
+            var dbProduct = await _productsReader.GetStoreProductByIdAsync(productId);
+
+            if (dbProduct is null)
+            {
+                throw new ProductDoesNotExistException(productId);
             }
         }
     }

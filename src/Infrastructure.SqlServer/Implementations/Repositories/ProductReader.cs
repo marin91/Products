@@ -22,7 +22,7 @@ namespace Infrastructure.SqlServer.Implementations.Repositories
         }
 
         /// <inheritdoc />
-        public Task<DomainProduct> GetStoreProductByIdAsync(int id)
+        public Task<DomainProduct> GetStoreProductByIdAsync(long id)
         {
             throw new NotImplementedException();
         }
