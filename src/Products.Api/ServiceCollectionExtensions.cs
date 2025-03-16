@@ -45,9 +45,9 @@ namespace Products.Api
                 {
                     return new ProblemDetails
                     {
-                        Status = (int)HttpStatusCode.NotFound,
+                        Status = StatusCodes.Status404NotFound, 
                         Title = "Product Not Found.",
-                        Detail = "The product does not exist in the system.",
+                        Detail = ex.Message,
                         Type = $"{ctx.Request.Scheme}://{ctx.Request.Host}/errors/not-found",
                         Instance = ctx.Request.Path
                     };
@@ -62,7 +62,7 @@ namespace Products.Api
 
                     var validationProblemDetails = new ValidationProblemDetails
                     {
-                        Status = (int)HttpStatusCode.BadRequest,
+                        Status = StatusCodes.Status400BadRequest,
                         Title = "Validation Error",
                         Detail = "One or more validation errors occurred.",
                         Type = $"{ctx.Request.Scheme}://{ctx.Request.Host}/errors/validation-error",
@@ -85,10 +85,8 @@ namespace Products.Api
                     return validationProblemDetails;
                 });
 
-
-
                 // Default handler for unmapped exceptions
-                options.MapToStatusCode<Exception>((int)HttpStatusCode.InternalServerError);
+                options.MapToStatusCode<Exception>(StatusCodes.Status500InternalServerError);
 
             });
         }
