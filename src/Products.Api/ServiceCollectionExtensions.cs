@@ -1,4 +1,5 @@
 ﻿using Domain.Abstractions;
+using Domain.Exceptions;
 using FluentValidation;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc;
@@ -40,6 +41,18 @@ namespace Products.Api
                 options.IncludeExceptionDetails = (ctx, ex) =>
                     false;
 
+                options.Map<ProductDoesNotExistException>((ctx, ex) =>
+                {
+                    return new ProblemDetails
+                    {
+                        Status = (int)HttpStatusCode.NotFound,
+                        Title = "Product Not Found.",
+                        Detail = "The product does not exist in the system.",
+                        Type = $"{ctx.Request.Scheme}://{ctx.Request.Host}/errors/not-found",
+                        Instance = ctx.Request.Path
+                    };
+                });
+
                 // Handle validation exceptions (e.g., FluentValidation)
                 options.Map<ValidationException>((ctx, ex) =>
                 {
@@ -71,6 +84,8 @@ namespace Products.Api
 
                     return validationProblemDetails;
                 });
+
+
 
                 // Default handler for unmapped exceptions
                 options.MapToStatusCode<Exception>((int)HttpStatusCode.InternalServerError);

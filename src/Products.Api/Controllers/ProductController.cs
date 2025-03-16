@@ -142,7 +142,7 @@ namespace Products.Api.Controllers
             {
                 _logger.LogError(ex, "The product deletion operation did not take place because the product doesn't exist in the system.");
 
-                return NotFound();
+                throw;
             }
             catch (Exception ex) when (ex is not ValidationException) 
             {
@@ -183,7 +183,7 @@ namespace Products.Api.Controllers
             {
                 _logger.LogError(ex, "The product deletion operation did not take place because the product doesn't exist in the system.");
 
-                return NotFound();
+                throw;
             }
             catch (Exception ex) when (ex is not ValidationException)
             {
