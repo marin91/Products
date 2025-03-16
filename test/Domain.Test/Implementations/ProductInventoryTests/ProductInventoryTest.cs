@@ -2,6 +2,7 @@
 using Domain.Implementations;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Moq.Language.Flow;
 
 namespace Domain.Test.Implementations.ProductInventoryTests
 {
@@ -31,6 +32,12 @@ namespace Domain.Test.Implementations.ProductInventoryTests
                 _mockProductRemover.Object, 
                 _mockLogger.Object);
         }
+
+        protected ISetup<IReadProducts, Task<Models.Product>> SetupGetStoreProductByIdAsync(long productId)
+        {
+            return _mockProductReader.Setup(x => x.GetStoreProductByIdAsync(productId));
+        }
+
 
     }
 }

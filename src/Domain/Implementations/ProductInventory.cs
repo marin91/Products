@@ -48,12 +48,10 @@ namespace Domain.Implementations
         }
 
         /// <inheritdoc />
-        public async Task DeleteProductAsync(Product product)
+        public async Task DeleteProductAsync(long productId)
         {
             try
             {
-                var productId = product.Id;
-
                 _logger.LogInformation($"Attempting to remove a product from the system with the following Id: {productId}.");
 
                 await ThrowExceptionIfProductDoesNotExistInSystem(productId);

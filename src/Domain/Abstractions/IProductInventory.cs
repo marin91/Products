@@ -30,9 +30,9 @@ namespace Domain.Abstractions
         /// <summary>
         /// Deletes a product from the inventory.
         /// </summary>
-        /// <param name="product">The product to be removed.</param>
+        /// <param name="productId">The product Id of the product to be removed.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public Task DeleteProductAsync(Product product);
+        public Task DeleteProductAsync(long productId);
     }
 
 }
