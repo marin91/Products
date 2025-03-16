@@ -20,26 +20,7 @@ builder.Services.RegisterProductRepositories()
     .RegisterTheProductMappers()
     .RegisterTheProductInventory();
 
-builder.Services.AddControllers()
-    .ConfigureApiBehaviorOptions(options =>
-    {
-        // Customize automatic 400 responses
-        options.InvalidModelStateResponseFactory = context =>
-        {
-            var problemDetails = new ValidationProblemDetails(context.ModelState)
-            {
-                Type = "https://api.yourapp.com/errors/validation",
-                Title = "One or more validation errors occurred.",
-                Status = StatusCodes.Status400BadRequest,
-                Instance = context.HttpContext.Request.Path,
-            };
-
-            return new BadRequestObjectResult(problemDetails)
-            {
-                ContentTypes = { "application/problem+json" }
-            };
-        };
-    });
+builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
