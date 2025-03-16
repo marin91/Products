@@ -1,4 +1,5 @@
 using Domain.Abstractions;
+using Domain.Exceptions;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -126,6 +127,7 @@ namespace Products.Api.Controllers
 
             try
             {
+
                 await ValidateRequestAsync(product);
 
                 var domainProduct = _apiToDomainMapper.Map(product);
@@ -135,6 +137,12 @@ namespace Products.Api.Controllers
                 _logger.LogInformation("The product was successfully updated.");
 
                 return Ok();
+            }
+            catch (ProductDoesNotExistException ex)
+            {
+                _logger.LogError(ex, "The product deletion operation did not take place because the product doesn't exist in the system.");
+
+                return NotFound();
             }
             catch (Exception ex) when (ex is not ValidationException) 
             {
@@ -169,7 +177,13 @@ namespace Products.Api.Controllers
                     throw new ValidationException(new List<ValidationFailure> { new ValidationFailure(nameof(productId), "The productId is invalid.") });
                 }
 
-                return Ok();
+                return NoContent();
+            }
+            catch(ProductDoesNotExistException ex)
+            {
+                _logger.LogError(ex, "The product deletion operation did not take place because the product doesn't exist in the system.");
+
+                return NotFound();
             }
             catch (Exception ex) when (ex is not ValidationException)
             {
