@@ -39,7 +39,7 @@ namespace Products.Api.Controllers
         /// <response code="500">An unexpected internal server error occurred while processing the request.</response>        
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
         [HttpGet]
         public async Task<IActionResult> GetAllStoreProducts()
         {
@@ -78,8 +78,8 @@ namespace Products.Api.Controllers
         /// <response code="400">The request contains invalid or missing data.</response>
         /// <response code="500">An unexpected internal server error occurred while processing the request.</response>        
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
         [HttpPost]
         public async Task<IActionResult> AddProduct([FromBody] Product product)
         {
@@ -114,10 +114,10 @@ namespace Products.Api.Controllers
         /// <response code="400">The request contains invalid or missing data.</response>
         /// <response code="404">The product does not exist in the system.</response>
         /// <response code="500">An unexpected internal server error occurred while processing the request.</response>
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]        
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
         [HttpPut]
         public async Task <IActionResult> UpdateProduct([FromBody] Product product)
         {
@@ -152,9 +152,9 @@ namespace Products.Api.Controllers
         /// <response code="404">The product does not exist in the system.</response>
         /// <response code="500">An unexpected internal server error occurred while processing the request.</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
         [HttpDelete]
         [Route("/[controller]/{productId:int}")]
         public IActionResult DeleteProduct(long productId)
@@ -186,10 +186,19 @@ namespace Products.Api.Controllers
 
             if (!validationResult.IsValid)
             {
-                _logger.LogWarning("The request failed validation.");
+                LogValidationErrorMessages(validationResult.Errors);
 
                 throw new ValidationException(validationResult.Errors);
             }
+        }
+
+        private void LogValidationErrorMessages(IEnumerable<ValidationFailure> validationFailures)
+        {
+            var errors = validationFailures.Select(x => x.ErrorMessage).ToList();
+
+            var formattedErrors = string.Join(", ", errors);    
+
+            _logger.LogWarning("The request failed validation for the following reason(s): {errors}", formattedErrors);
         }
     }
 }
