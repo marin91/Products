@@ -14,12 +14,12 @@
 
             if (price <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(productId), "The product's current price must be larger than 0.");
+                throw new ArgumentOutOfRangeException(nameof(price), "The product's current price must be larger than 0.");
             }
 
             if (quantity < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(productId), "The product's quantity cannot be negative.");
+                throw new ArgumentOutOfRangeException(nameof(quantity), "The product's quantity cannot be negative.");
             }
 
             Id = productId;
