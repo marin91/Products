@@ -22,7 +22,8 @@ namespace Products.Api.Controllers
 
         private readonly IMap<DomainProduct, Product> _domainToApiMapper;
 
-        public ProductController(ILogger<ProductController> logger, IProductInventory productInventory, 
+        public ProductController(ILogger<ProductController> logger, 
+            IProductInventory productInventory, 
             IMap<Product, DomainProduct> apiToDomainMapper,
             IMap<DomainProduct, Product> domainToApiMapper,
             IValidator<Product> productValidator)
