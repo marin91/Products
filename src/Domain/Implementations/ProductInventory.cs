@@ -99,7 +99,7 @@ namespace Domain.Implementations
         }
 
         /// <inheritdoc />
-        public async Task UpdateProductAsync(Product product)
+        public async Task UpdateProductAsync(long currentId, Product product)
         {
             try
             {
@@ -107,10 +107,22 @@ namespace Domain.Implementations
 
                 _logger.LogInformation("Attempting to update an existing product in the system.");
 
-                await ThrowExceptionIfProductDoesNotExistInSystem(productId);
+                
+                if (currentId != 0 && currentId != productId)
+                {
+                    await ThrowExceptionIfProductDoesNotExistInSystem(currentId);
 
-                await _productsWriter.UpdateProductAsync(product);
+                    await ThrowExceptionIfProductAlreadyExistsInSystem(productId);
 
+                    await _productsWriter.UpdateProductAsync(currentId, product);
+                }
+                else
+                {
+                    await ThrowExceptionIfProductDoesNotExistInSystem(productId);
+
+                    await _productsWriter.UpdateProductAsync(product);
+                }
+                
                 _logger.LogInformation("The product was successfully updated.");
 
             }

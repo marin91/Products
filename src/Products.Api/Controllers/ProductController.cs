@@ -121,7 +121,7 @@ namespace Products.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
         [HttpPut]
-        public async Task <IActionResult> UpdateProduct([FromBody] Product product)
+        public async Task <IActionResult> UpdateProduct([FromBody] UpdateProduct updateProduct)
         {
 
             _logger.LogInformation("Attempting to update a product.");
@@ -129,11 +129,11 @@ namespace Products.Api.Controllers
             try
             {
 
-                await ValidateRequestAsync(product);
+                await ValidateRequestAsync(updateProduct);
 
-                var domainProduct = _apiToDomainMapper.Map(product);
+                var domainProduct = _apiToDomainMapper.Map(updateProduct);
 
-                await _productInventory.UpdateProductAsync(domainProduct);
+                await _productInventory.UpdateProductAsync(updateProduct.CurrentId, domainProduct);
 
                 _logger.LogInformation("The product was successfully updated.");
 

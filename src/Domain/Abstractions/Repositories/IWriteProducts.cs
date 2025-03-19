@@ -21,5 +21,13 @@ namespace Domain.Abstractions.Repositories
         /// <returns>A task representing the asynchronous operation.</returns>
         Task UpdateProductAsync(Product product);
 
+        /// <summary>
+        /// Asynchronously updates an existing product, along with the Id.
+        /// </summary>
+        /// <param name="currentId">The product's current unique Id.</param>
+        /// <param name="product">The product with updated information.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        Task UpdateProductAsync(long currentId, Product product);
+
     }
 }

@@ -67,6 +67,12 @@ namespace Infrastructure.SqlServer.Implementations.Repositories
         }
 
         /// <inheritdoc />
+        public Task UpdateProductAsync(long currentId, DomainProduct product)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
         public Task UpdateProductAsync(DomainProduct product)
         {
             throw new NotImplementedException();

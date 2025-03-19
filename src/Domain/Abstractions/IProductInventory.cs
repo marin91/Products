@@ -23,9 +23,10 @@ namespace Domain.Abstractions
         /// <summary>
         /// Updates an existing product in the inventory.
         /// </summary>
+        /// <param name="currentId">The product's current unique identifier.</param>
         /// <param name="product">The product with updated details.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public Task UpdateProductAsync(Product product);
+        public Task UpdateProductAsync(long currentId, Product product);
 
         /// <summary>
         /// Deletes a product from the inventory.
