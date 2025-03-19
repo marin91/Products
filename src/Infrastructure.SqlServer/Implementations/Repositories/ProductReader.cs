@@ -65,9 +65,45 @@ namespace Infrastructure.SqlServer.Implementations.Repositories
         }
 
         /// <inheritdoc />
-        public Task<IEnumerable<DomainProduct>> RetrieveAllStoreProductsAsync()
+        public async Task<IEnumerable<DomainProduct>> RetrieveAllStoreProductsAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var allProducts = new List<DomainProduct>();
+
+                _logger.LogInformation($"Attempting to retrieve all of the products.");
+
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    string sql = "SELECT Id, Description, Price, Quantity FROM Product";
+
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+
+                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                             while (await reader.ReadAsync())
+                            {
+                                var product = await ToProduct(reader);
+
+                                allProducts.Add(product);
+                            }
+
+                        }
+                    }
+
+                }
+
+                return allProducts;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected issue occurred while retrieving all of the products.");
+
+                throw;
+            }
         }
 
         private static async Task<DomainProduct> ToProduct(SqlDataReader reader)
