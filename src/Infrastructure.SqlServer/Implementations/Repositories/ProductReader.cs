@@ -53,6 +53,12 @@ namespace Infrastructure.SqlServer.Implementations.Repositories
 
                 }
             }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "An error was raised from the SQL Server engine.");
+
+                throw;
+            }
             catch (Exception ex) 
             {
                 _logger.LogError(ex, "An unexpected issue occurred while retrieving a product by it's Id.");
@@ -94,6 +100,12 @@ namespace Infrastructure.SqlServer.Implementations.Repositories
                 }
 
                 return allProducts;
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "An error was raised from the SQL Server engine.");
+
+                throw;
             }
             catch (Exception ex)
             {
