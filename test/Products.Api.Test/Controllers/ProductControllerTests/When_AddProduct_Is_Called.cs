@@ -1,11 +1,13 @@
 ﻿using Domain.Abstractions;
 using FluentAssertions;
 using FluentValidation;
-using DomainProduct = Domain.Models.Product;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Moq.Language.Flow;
 using Products.Api.Models;
+using DomainProduct = Domain.Models.Product;
 
 namespace Products.Api.Test.Controllers.ProductControllerTests
 {
@@ -75,8 +77,52 @@ namespace Products.Api.Test.Controllers.ProductControllerTests
             ValidateAddProductAsyncWasNeverCalled();
         }
 
+        [Test]
+        public async Task If_AddProductAsync_Throws_An_Exception_Then_It_Is_Caught_And_Rethrown()
+        {
+            Func<Task> act = async () => { await _systemUnderTest.AddProduct(_product); };
 
-        private ValidationResult CreateFakeValidationResultWithErrors()
+
+            var successfulValidationResult = new ValidationResult();
+
+            SetupValidateAsync(_product).ReturnsAsync(successfulValidationResult);
+
+            var expectedMappedDomainProduct = GetExpectedMappedDomainProduct(); 
+
+            SetupMap(_product).Returns(expectedMappedDomainProduct);
+
+            var exceptionToThrow = new Exception("Some exception to throw");
+
+            SetupAddProductAsync(expectedMappedDomainProduct).ThrowsAsync(exceptionToThrow);
+
+            await act.Should().ThrowAsync<Exception>()
+                .WithMessage(exceptionToThrow.Message);
+
+        }
+
+        [Test]
+        public async Task If_It_Is_Successful_Then_A_Response_With_A_200_Status_Code_Is_Returned()
+        {            
+            var successfulValidationResult = new ValidationResult();
+
+            SetupValidateAsync(_product).ReturnsAsync(successfulValidationResult);
+
+            var expectedMappedDomainProduct = GetExpectedMappedDomainProduct();
+
+            SetupMap(_product).Returns(expectedMappedDomainProduct);
+
+            var response = await _systemUnderTest.AddProduct(_product);
+
+            response.Should().BeOfType<OkResult>()
+                .Which.StatusCode.Should().Be(StatusCodes.Status200OK);
+        }
+
+        private DomainProduct GetExpectedMappedDomainProduct()
+        {
+            return new DomainProduct(_product.Id, _product.Description, _product.Price, _product.Quantity);
+        }
+
+        private static ValidationResult CreateFakeValidationResultWithErrors()
         {
             var validationResult = new ValidationResult(
                 new List<ValidationFailure>() 
@@ -100,6 +146,11 @@ namespace Products.Api.Test.Controllers.ProductControllerTests
         private ISetup<IMap<Product, DomainProduct>, DomainProduct> SetupMap(Product product)
         {
             return _mockApiToDomainMapper.Setup(x => x.Map(product));
+        }
+
+        private ISetup<IProductInventory, Task> SetupAddProductAsync(DomainProduct product)
+        {
+            return _mockProductInventory.Setup(x => x.AddProductAsync(product));
         }
 
     }
