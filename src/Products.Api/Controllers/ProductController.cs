@@ -98,7 +98,7 @@ namespace Products.Api.Controllers
 
                 _logger.LogInformation("The product was successfully added.");
 
-                return Ok();
+                return Created();
             }
             catch (Exception ex) when (ex is not ValidationException)
             {

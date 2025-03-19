@@ -67,15 +67,98 @@ namespace Infrastructure.SqlServer.Implementations.Repositories
         }
 
         /// <inheritdoc />
-        public Task UpdateProductAsync(long currentId, DomainProduct product)
+        public async Task UpdateProductAsync(long currentId, DomainProduct product)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger.LogInformation($"Attempting to update a product with Id: {currentId}");
+
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    string sql = "UPDATE Product SET Id = @Id, Description = @Description, Price = @Price, Quantity = @Quantity WHERE Id = @CurrentId";
+
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@CurrentId", currentId);
+                        cmd.Parameters.AddWithValue("@Id", product.Id);
+                        cmd.Parameters.AddWithValue("@Description", product.Description);
+                        cmd.Parameters.AddWithValue("@Price", product.Price);
+                        cmd.Parameters.AddWithValue("@Quantity", product.Quantity);
+
+                        int rowsAffected = await cmd.ExecuteNonQueryAsync();
+
+                        if (rowsAffected == 0)
+                        {
+                            throw new Exception("The query executed successfully but the product was not updated.");
+                        }
+
+                        _logger.LogInformation("The product was successfully updated.");
+                    }
+
+                }
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "An error was raised from the SQL Server engine.");
+
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected issue occurred while updating a product.");
+
+                throw;
+            }
         }
 
         /// <inheritdoc />
-        public Task UpdateProductAsync(DomainProduct product)
+        public async Task UpdateProductAsync(DomainProduct product)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var productId = product.Id;
+
+                _logger.LogInformation($"Attempting to update a product with Id: {productId}");
+
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    string sql = "UPDATE Product SET Description = @Description, Price = @Price, Quantity = @Quantity WHERE Id = @Id";
+
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Id", product.Id);
+                        cmd.Parameters.AddWithValue("@Description", product.Description);
+                        cmd.Parameters.AddWithValue("@Price", product.Price);
+                        cmd.Parameters.AddWithValue("@Quantity", product.Quantity);
+
+                        int rowsAffected = await cmd.ExecuteNonQueryAsync();
+
+                        if (rowsAffected == 0)
+                        {
+                            throw new Exception("The query executed successfully but the product was not updated.");
+                        }
+
+                        _logger.LogInformation("The product was successfully updated.");
+                    }
+
+                }
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "An error was raised from the SQL Server engine.");
+
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected issue occurred while updating a product.");
+
+                throw;
+            }
         }
     }
 }
