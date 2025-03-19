@@ -34,6 +34,8 @@ namespace Domain.Implementations
             {
                 _logger.LogInformation("Attempting to create product in the system.");
 
+                await ThrowExceptionIfProductAlreadyExistsInSystem(product.Id);
+
                 await _productsWriter.CreateProductAsync(product);
 
                 _logger.LogInformation("The product was successfully created in the system.");
@@ -133,6 +135,16 @@ namespace Domain.Implementations
             if (dbProduct is null)
             {
                 throw new ProductDoesNotExistException(productId);
+            }
+        }
+
+        private async Task ThrowExceptionIfProductAlreadyExistsInSystem(long productId)
+        {
+            var dbProduct = await _productsReader.GetStoreProductByIdAsync(productId);
+
+            if (dbProduct is not null)
+            {
+                throw new ProductAlreadyExistsException(productId);
             }
         }
     }
