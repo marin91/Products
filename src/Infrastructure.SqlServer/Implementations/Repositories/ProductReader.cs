@@ -13,12 +13,9 @@ namespace Infrastructure.SqlServer.Implementations.Repositories
     {
         private readonly ILogger<ProductReader> _logger;
 
-        private readonly IMap<Product, DomainProduct> _productMapper;
-
         public ProductReader(IOptions<ProductsConnectionOptions> connectionOptions, 
-            IMap<Product, DomainProduct> productMapper, ILogger<ProductReader> logger) : base(connectionOptions) 
+            ILogger<ProductReader> logger) : base(connectionOptions) 
         { 
-            _productMapper = productMapper;
             _logger = logger;
         }
 
