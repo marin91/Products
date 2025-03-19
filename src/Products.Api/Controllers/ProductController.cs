@@ -166,7 +166,7 @@ namespace Products.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
         [HttpDelete]
         [Route("/[controller]/{productId:int}")]
-        public IActionResult DeleteProduct(long productId)
+        public async Task<IActionResult> DeleteProduct(long productId)
         {
 
             _logger.LogInformation($"Attempting to delete a product with the following id: {productId}");
@@ -177,6 +177,8 @@ namespace Products.Api.Controllers
                 {
                     throw new ValidationException(new List<ValidationFailure> { new ValidationFailure(nameof(productId), "The productId is invalid.") });
                 }
+
+                await _productInventory.DeleteProductAsync(productId);
 
                 return NoContent();
             }

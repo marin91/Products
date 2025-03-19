@@ -2,6 +2,7 @@
 using Domain.Abstractions.Repositories;
 using Infrastructure.SqlServer.Models;
 using Infrastructure.SqlServer.Options;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using DomainProduct = Domain.Models.Product;
@@ -22,9 +23,45 @@ namespace Infrastructure.SqlServer.Implementations.Repositories
         }
 
         /// <inheritdoc />
-        public Task<DomainProduct> GetStoreProductByIdAsync(long id)
+        public async Task<DomainProduct?> GetStoreProductByIdAsync(long id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger.LogInformation($"Attempting to retrieve a product with Id: {id}");
+
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    string sql = "SELECT Id, Description, Price, Quantity FROM Product WHERE Id = @Id";
+
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Id", id);
+
+                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                return await ToProduct(reader);
+                            }
+                            else
+                            {
+                                _logger.LogWarning($"The product with Id: {id} was not found in the Products table.");
+
+                                return null;
+                            }
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex) 
+            {
+                _logger.LogError(ex, "An unexpected issue occurred while retrieving a product by it's Id.");
+
+                throw;
+            }
         }
 
         /// <inheritdoc />
@@ -32,5 +69,16 @@ namespace Infrastructure.SqlServer.Implementations.Repositories
         {
             throw new NotImplementedException();
         }
+
+        private static async Task<DomainProduct> ToProduct(SqlDataReader reader)
+        {
+            var productId = reader.GetInt64(0);
+            var description = await reader.GetTextReader(1).ReadToEndAsync();
+            var price = reader.GetDecimal(2);
+            var quantity = reader.GetInt32(3);
+
+            return new DomainProduct(productId, description, price, quantity);
+        }
+
     }
 }
