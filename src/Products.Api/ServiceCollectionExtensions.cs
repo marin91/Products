@@ -53,6 +53,18 @@ namespace Products.Api
                     };
                 });
 
+                options.Map<ProductAlreadyExistsException>((ctx, ex) =>
+                {
+                    return new ProblemDetails
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Title = "Product with specified Id already exists.",
+                        Detail = ex.Message,
+                        Type = $"{ctx.Request.Scheme}://{ctx.Request.Host}/errors/invalid-product-id",
+                        Instance = ctx.Request.Path
+                    };
+                });
+
                 // Handle validation exceptions (e.g., FluentValidation)
                 options.Map<ValidationException>((ctx, ex) =>
                 {

@@ -17,7 +17,7 @@
 
         }
 
-        public ProductAlreadyExistsException(long productId) : base($"The product with {productId} already exists in the system.")
+        public ProductAlreadyExistsException(long productId) : base($"The product with Id:({productId}) already exists in the system.")
         {
 
         }
