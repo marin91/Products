@@ -1,5 +1,4 @@
 ﻿using Domain.Abstractions.Repositories;
-using Domain.Exceptions;
 using Infrastructure.SqlServer.Options;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
@@ -8,7 +7,7 @@ using DomainProduct = Domain.Models.Product;
 
 namespace Infrastructure.SqlServer.Implementations.Repositories
 {
-    internal class ProductWriter : ProductRepository, IWriteProducts
+    internal class ProductWriter : ProductRepositoryBase, IWriteProducts
     {
         private readonly ILogger<ProductWriter> _logger;
 

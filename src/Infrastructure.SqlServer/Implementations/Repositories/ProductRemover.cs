@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace Infrastructure.SqlServer.Implementations.Repositories
 {
-    internal class ProductRemover : ProductRepository, IRemoveProducts
+    internal class ProductRemover : ProductRepositoryBase, IRemoveProducts
     {
         private readonly ILogger<ProductRemover> _logger;
 

@@ -9,7 +9,7 @@ using DomainProduct = Domain.Models.Product;
 
 namespace Infrastructure.SqlServer.Implementations.Repositories
 {
-    internal class ProductReader : ProductRepository, IReadProducts
+    internal class ProductReader : ProductRepositoryBase, IReadProducts
     {
         private readonly ILogger<ProductReader> _logger;
 
