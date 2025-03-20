@@ -46,6 +46,9 @@ The response clearly conveys that the product already exists in the system.
 ```
 
 ## Testing Notes
+
+### Manual testing / Testing coverage
+
 I manually validated that the application meets its objectives and provided unit tests for each layer, except for the Infrastructure.SqlServer layer.
 
 ### Running the app
