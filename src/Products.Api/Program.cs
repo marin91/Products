@@ -2,14 +2,13 @@ using Domain;
 using Hellang.Middleware.ProblemDetails;
 using Infrastructure.SqlServer;
 using Infrastructure.SqlServer.Options;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Products.Api;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.RegisterProblemDetailsHandling();
+builder.Services.RegisterProblemDetailsHandling();
 
 builder.Services.RegisterTheProductValidator();
 

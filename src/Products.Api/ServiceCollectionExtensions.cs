@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Products.Api.Mappers;
 using Products.Api.Models;
 using Products.Api.Validators;
-using System.Net;
 using DomainProduct = Domain.Models.Product;
 
 namespace Products.Api
@@ -14,7 +13,7 @@ namespace Products.Api
     internal static class ServiceCollectionExtensions
     {
         /// <summary>
-        /// Registers the product mapper in the dependency injection container.
+        /// Registers the product mappers in the dependency injection container.
         /// </summary>
         /// <param name="services">The IServiceCollection instance to which the service is added.</param>
         /// <returns>The updated IServiceCollection instance.</returns>
@@ -34,9 +33,14 @@ namespace Products.Api
             return services.AddScoped<IValidator<Product>, ProductValidator>();
         }
 
-        public static IServiceCollection RegisterProblemDetailsHandling(this WebApplicationBuilder builder)
+        /// <summary>
+        /// Registers the ProblemDetails error handling service that is going to handle HTTP errors in the application.
+        /// </summary>
+        /// <param name="services">The IServiceCollection instance to which the service is added.</param>
+        /// <returns>The updated IServiceCollection instance.</returns>
+        public static IServiceCollection RegisterProblemDetailsHandling(this IServiceCollection services)
         {
-            return builder.Services.AddProblemDetails(options =>
+            return services.AddProblemDetails(options =>
             {
                 options.IncludeExceptionDetails = (ctx, ex) =>
                     false;
