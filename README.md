@@ -48,7 +48,19 @@ The response clearly conveys that the product already exists in the system.
 ## Testing Notes
 I manually validated that the application meets its objectives and provided unit tests for each layer, except for the Infrastructure.SqlServer layer.
 
+### Running the app
+To run the app and validate it against a live data source, please perform the following:
+
+1. Run the script that is provided in the **Database Notes** section, so that the table is created within a database.
+2. Provide the connectionstring of your SQL Server instance in the appsettings.json file. In particular update the ```ProductDatabaseConnection:ConnectionString``` configuration section.
+3. If the app can successfully connect to a db instance, then it should work as expected.
+
+Ideally, it would be much better if the app and a SQL Server instance can be containerized together using Docker. It would fascilitate local testing for developers. This approach is convenient because we won't have an external dependency, like having Microsoft SQL Server installed. Below I provide a link to this topic.
+
+Microsoft's documentation: [Click Here](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/multi-container-microservice-net-applications/database-server-container#sql-server-running-as-a-container-with-a-microservice-related-database)
+
 ## Database Notes
+This data storage provider that this application integrates with is Microsoft SQL Server.
 
 ### Table Creation Script
 
